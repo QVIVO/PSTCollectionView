@@ -90,7 +90,12 @@ extern NSString *const PSTCollectionViewLayoutAwokeFromNib;
 /// @name Registering Decoration Views
 
 - (void)registerClass:(Class)viewClass forDecorationViewWithReuseIdentifier:(NSString *)identifier;
+
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
+
 - (void)registerNib:(UINib *)nib forDecorationViewWithReuseIdentifier:(NSString *)identifier;
+
+#endif
 
 @end
 

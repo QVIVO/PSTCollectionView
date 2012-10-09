@@ -33,11 +33,13 @@
     return self;
 }
 
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if((self = [super initWithCoder:aDecoder])) {
     }
     return self;
 }
+#endif
 
 - (void)awakeFromNib {    
     self.reuseIdentifier = [self valueForKeyPath:@"reuseIdentifier"];

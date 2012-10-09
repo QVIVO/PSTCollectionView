@@ -123,6 +123,7 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
     return self;
 }
 
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
 - (id)initWithCoder:(NSCoder *)inCoder {
     if ((self = [super initWithCoder:inCoder])) {
 
@@ -134,6 +135,7 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
     }
     return self;
 }
+#endif
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -228,6 +230,7 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
     _supplementaryViewClassDict[identifier] = viewClass;
 }
 
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
 - (void)registerNib:(UINib *)nib forCellWithReuseIdentifier:(NSString *)identifier {
     NSArray *topLevelObjects = [nib instantiateWithOwner:nil options:nil];
     NSAssert(topLevelObjects.count == 1 && [topLevelObjects[0] isKindOfClass:PSTCollectionViewCell.class], @"must contain exactly 1 top level object which is a PSTCollectionViewCell");
@@ -241,6 +244,7 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
     
     _cellNibDict[identifier] = nib;
 }
+#endif
 
 - (id)dequeueReusableCellWithReuseIdentifier:(NSString *)identifier forIndexPath:(NSIndexPath *)indexPath {
     // dequeue cell (if available)
@@ -250,9 +254,11 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
         [reusableCells removeObjectAtIndex:[reusableCells count]-1];
     }else {
         if (_cellNibDict[identifier]) {
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
             // Cell was registered via registerNib:forCellWithReuseIdentifier:
             UINib *cellNib = _cellNibDict[identifier];
             cell = [cellNib instantiateWithOwner:self options:0][0];
+#endif
         } else {
 
             Class cellClass = _cellClassDict[identifier];
@@ -284,9 +290,11 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
         [reusableViews removeObjectAtIndex:reusableViews.count - 1];
     } else {
         if (_cellNibDict[identifier]) {
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
             // supplementary view was registered via registerNib:forCellWithReuseIdentifier:
             UINib *supplementaryViewNib = _supplementaryViewNibDict[identifier];
             view = [supplementaryViewNib instantiateWithOwner:self options:0][0];
+#endif
         } else {
         Class viewClass = _supplementaryViewClassDict[identifier];
         Class reusableViewClass = NSClassFromString(@"UICollectionReusableView");
