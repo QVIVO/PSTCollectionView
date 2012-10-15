@@ -62,16 +62,20 @@ NSString *const PSTFlowLayoutRowVerticalAlignmentKey = @"UIFlowLayoutRowVertical
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - NSObject
 
+- (void)commonInit {
+    _itemSize = CGSizeMake(50.f, 50.f);
+    _lineSpacing = 10.f;
+    _interitemSpacing = 10.f;
+    _sectionInset = UIEdgeInsetsZero;
+    _scrollDirection = PSTCollectionViewScrollDirectionVertical;
+    _headerReferenceSize = CGSizeZero;
+    _footerReferenceSize = CGSizeZero;
+}
+
 - (id)init {
     if((self = [super init])) {
-        _itemSize = CGSizeMake(50.f, 50.f);
-        _lineSpacing = 10.f;
-        _interitemSpacing = 10.f;
-        _sectionInset = UIEdgeInsetsZero;
-        _scrollDirection = PSTCollectionViewScrollDirectionVertical;
-        _headerReferenceSize = CGSizeZero;
-        _footerReferenceSize = CGSizeZero;
-        
+        [self commonInit];
+
         // set default values for row alignment.
         _rowAlignmentsOptionsDictionary = @{
         PSTFlowLayoutCommonRowHorizontalAlignmentKey : @(PSTFlowLayoutHorizontalAlignmentJustify),
@@ -82,6 +86,29 @@ NSString *const PSTFlowLayoutRowVerticalAlignmentKey = @"UIFlowLayoutRowVertical
 
         // custom ivars
         objc_setAssociatedObject(self, &kPSTCachedItemRectsKey, [NSMutableArray array], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if ((self = [super initWithCoder:decoder])) {
+        [self commonInit];
+
+        // some properties are not set if they're default (like minimumInteritemSpacing == 10)
+        if ([decoder containsValueForKey:@"UIItemSize"])
+            self.itemSize = [decoder decodeCGSizeForKey:@"UIItemSize"];
+        if ([decoder containsValueForKey:@"UIInteritemSpacing"])
+            self.minimumInteritemSpacing = [decoder decodeFloatForKey:@"UIInteritemSpacing"];
+        if ([decoder containsValueForKey:@"UILineSpacing"])
+            self.minimumLineSpacing = [decoder decodeFloatForKey:@"UILineSpacing"];
+        if ([decoder containsValueForKey:@"UIFooterReferenceSize"])
+            self.footerReferenceSize = [decoder decodeCGSizeForKey:@"UIFooterReferenceSize"];
+        if ([decoder containsValueForKey:@"UIHeaderReferenceSize"])
+            self.headerReferenceSize = [decoder decodeCGSizeForKey:@"UIHeaderReferenceSize"];
+        if ([decoder containsValueForKey:@"UISectionInset"])
+            self.sectionInset = [decoder decodeUIEdgeInsetsForKey:@"UISectionInset"];
+        if ([decoder containsValueForKey:@"UIScrollDirection"])
+            self.scrollDirection = [decoder decodeIntegerForKey:@"UIScrollDirection"];
     }
     return self;
 }
@@ -118,7 +145,6 @@ static char kPSTCachedItemRectsKey;
 
                     for (NSInteger itemIndex = 0; itemIndex < row.itemCount; itemIndex++) {
                         PSTCollectionViewLayoutAttributes *layoutAttributes;
-                        NSUInteger sectionIndex = [section.layoutInfo.sections indexOfObject:section];
                         NSUInteger sectionItemIndex;
                         CGRect itemFrame;
                         if (row.fixedItemSize) {
@@ -126,7 +152,7 @@ static char kPSTCachedItemRectsKey;
                             sectionItemIndex = row.index * section.itemsByRowCount + itemIndex;
                         }else {
                             PSTGridLayoutItem *item = row.items[itemIndex];
-                            sectionItemIndex = [section.items indexOfObject:item];
+                            sectionItemIndex = [section.items indexOfObjectIdenticalTo:item];
                             itemFrame = item.itemFrame;
                         }
                         layoutAttributes = [PSTCollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:[NSIndexPath indexPathForItem:sectionItemIndex inSection:sectionIndex]];
@@ -144,7 +170,7 @@ static char kPSTCachedItemRectsKey;
     PSTGridLayoutSection *section = _data.sections[indexPath.section];
     PSTGridLayoutRow *row = nil;
     CGRect itemFrame = CGRectZero;
-    
+
     if (section.fixedItemSize && indexPath.item / section.itemsByRowCount < (NSInteger)[section.rows count]) {
         row = section.rows[indexPath.item / section.itemsByRowCount];
         NSUInteger itemIndex = indexPath.item % section.itemsByRowCount;
