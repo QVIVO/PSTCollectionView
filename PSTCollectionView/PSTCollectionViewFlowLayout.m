@@ -90,6 +90,7 @@ NSString *const PSTFlowLayoutRowVerticalAlignmentKey = @"UIFlowLayoutRowVertical
     return self;
 }
 
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
 - (id)initWithCoder:(NSCoder *)decoder {
     if ((self = [super initWithCoder:decoder])) {
         [self commonInit];
@@ -112,6 +113,7 @@ NSString *const PSTFlowLayoutRowVerticalAlignmentKey = @"UIFlowLayoutRowVertical
     }
     return self;
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - PSTCollectionViewLayout

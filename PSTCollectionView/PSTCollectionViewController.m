@@ -24,6 +24,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - NSObject
 
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
 - (id)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
@@ -33,6 +34,7 @@
     }
     return self;
 }
+#endif
 
 - (id)initWithCollectionViewLayout:(PSTCollectionViewLayout *)layout {
     if((self = [super init])) {
