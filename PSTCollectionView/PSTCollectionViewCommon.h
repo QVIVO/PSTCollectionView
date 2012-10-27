@@ -75,7 +75,7 @@
 #endif
 
 // imp_implementationWithBlock changed it's type in iOS6.
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < 60000
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR) && __IPHONE_OS_VERSION_MAX_ALLOWED < 60000
 #define PSBlockImplCast (__bridge void *)
 @interface NSDictionary(PSSubscriptingSupport)
 - (id)objectForKeyedSubscript:(id)key;
