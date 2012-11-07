@@ -57,7 +57,7 @@
     if (section.fixedItemSize) {
         itemFrame = (CGRect){.size=section.itemSize};
     }else {
-        itemFrame = [section.items[indexPath.item] itemFrame];
+        itemFrame = [section.items[indexPath.row] itemFrame];
     }
     return itemFrame;
 }

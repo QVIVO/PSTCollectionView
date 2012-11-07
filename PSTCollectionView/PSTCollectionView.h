@@ -118,7 +118,7 @@ typedef NS_OPTIONS(NSUInteger, UICollectionViewScrollPosition) {
 @end
 
 // To dynamically switch between PSTCollectionView and UICollectionView, use the PSUICollectionView* classes.
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED < 60000) || !(TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE)
 #define PSUICollectionView PSUICollectionView_
 #define PSUICollectionViewCell PSUICollectionViewCell_
 #define PSUICollectionReusableView PSUICollectionReusableView_
@@ -147,4 +147,14 @@ typedef NS_OPTIONS(NSUInteger, UICollectionViewScrollPosition) {
 #define PSUICollectionViewFlowLayout UICollectionViewFlowLayout
 #define PSUICollectionViewLayoutAttributes UICollectionViewLayoutAttributes
 #define PSUICollectionViewController UICollectionViewController
+#endif
+
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED < 60000) || !(TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE)
+@interface NSIndexPath (PSTCollectionViewAdditions)
+
+// Simple NSIndexPath addition to allow using "item" instead of "row".
++ (NSIndexPath *)indexPathForItem:(NSInteger)item inSection:(NSInteger)section;
+
+- (NSInteger)item;
+@end
 #endif

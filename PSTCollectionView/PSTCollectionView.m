@@ -1057,7 +1057,7 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
 
 @end
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED < 60000) || !(TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE)
 @implementation NSIndexPath (PSTCollectionViewAdditions)
 
 // Simple NSIndexPath addition to allow using "item" instead of "row".
@@ -1074,7 +1074,7 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Runtime Additions to create UICollectionView
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED < 60000) || !(TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE)
 @implementation PSUICollectionView_ @end
 @implementation PSUICollectionViewCell_ @end
 @implementation PSUICollectionReusableView_ @end
@@ -1082,6 +1082,9 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
 @implementation PSUICollectionViewFlowLayout_ @end
 @implementation PSUICollectionViewLayoutAttributes_ @end
 @implementation PSUICollectionViewController_ @end
+#endif
+
+#if (TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE) && __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
 
 // Create subclasses that pose as UICollectionView et al, if not available at runtime.
 __attribute__((constructor)) static void PSTCreateUICollectionViewClasses(void) {
